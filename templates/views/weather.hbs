@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeatherApp | GetWeather</title>
+        {{!-- <script src="/public/js/main.js"></script> --}}
+    {{>links}}
+</head>
+
+<body>
+    {{>navbar}}
+    <div class="container-fluid main_header">
+        <div class="row">
+            <div class="col-md-10 col-12 mx-auto container-adj">
+                <div class="searchBar">
+                    <form class="searchForm">
+                        <input type="text" id="cityName" autocomplete="off" placeholder="Enter your city name">
+                        <input type="submit" value="search" id="submitButton">
+                    </form>
+                </div>
+                <div class="information">
+                    <div class="upper">
+                        <p id="day">----</p>
+                        <p id="todaysDate">---</p>
+                    </div>
+                    <div class="main_layer">
+                        <p id="city_name">Get weather details of your city here..</p>
+                        <div class="lower  activity" id="tempInfo">
+                            <p class="tempLayer" id="temp"></p>
+                            <p id="status"></p>
+                            {{!-- <p id="status"> <i class="fa-solid fa-cloud-showers-heavy"></i> </p> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{>footer}}
+
+    {{!-- <script src="/public/js/main.js"></script> --}}
+    {{>scripts}}
+    <script>
+        const submitButton = document.getElementById('submitButton');
+        const cityName = document.getElementById('cityName');
+        const temp = document.getElementById('temp');
+        const status = document.getElementById('status');
+
+        const day = document.getElementById('day');
+        const todaysDate = document.getElementById('todaysDate');
+
+        const city_name = document.getElementById('city_name');
+
+        const getDate = async() =>{
+            let date = new Date();
+            let d = new Array;
+            let m = new Array;
+            d = ["Sunday","Monday","Wednesday","Thursday","Friday","Saturday"];
+            m = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"]
+            day.innerText = d[date.getDay()];
+            todaysDate.innerText = `${date.getDate()} ${m[date.getMonth()]}`;
+        }
+
+        const getInfo = async(event) => {
+            event.preventDefault();
+            getDate();
+            let city = cityName.value;
+            if(city === ""){
+                city_name.innerText = `Please enter the city name before search`;
+            }
+            else{
+                try{
+                    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=62a8dca476bc9afe004b509250785bb4`;
+                    let response = await fetch(url);
+                    response = await response.json();
+                    console.log(response)
+                    city_name.innerText = `${response.name}, ${response.sys.country}`;
+                    let temperature = response.main.temp;
+                    if(temperature<300 && temperature>283){
+                        status.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy"></i>`;
+                    }if(temperature<283){
+                        status.innerHTML = `<i class="fa-solid fa-snowflake"></i>`;
+                    }else{
+                        status.innerHTML = `<i class="fa-solid fa-cloud"></i>`;
+                    }
+                    temp.innerHTML = `${temperature}<sup>o</sup>C` ;
+                    console.log(response.sys.temp);
+                }catch{
+                    city_name.innerText = 'Enter city name properly';
+                    console.log('Enter valid city name')
+                }
+            }
+        }
+
+        submitButton.addEventListener('click', getInfo);
+    </script>
+
+</body>
+
+</html>
