@@ -79,9 +79,10 @@
                     console.log(response)
                     city_name.innerText = `${response.name}, ${response.sys.country}`;
                     let temperature = response.main.temp;
-                    if(temperature<300 && temperature>283){
+                    temprature = (temperature*9/5)+32;
+                    if(temperature<25 && temperature>16){
                         status.innerHTML = `<i class="fa-solid fa-cloud-showers-heavy"></i>`;
-                    }if(temperature<283){
+                    }if(temperature<16){
                         status.innerHTML = `<i class="fa-solid fa-snowflake"></i>`;
                     }else{
                         status.innerHTML = `<i class="fa-solid fa-cloud"></i>`;
